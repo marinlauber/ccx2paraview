@@ -907,6 +907,7 @@ class Converter:
         # ccx2paraview_3 - slight refactoring of 1     7m 25.4s    25m 1.1s
 
         self.frd.count_increments()
+        os.system("mkdir -p datp")
         for step, inc, num in self.step_inc_num(): # NOTE Could be (0, 0, '')
             result_blocks = self.frd.parse_results(step, inc) # NOTE Could be empty list []
             for b in result_blocks:
@@ -924,7 +925,7 @@ class Converter:
                 t.join() # do not start a new thread while and old one is running
             threads.clear()
             for fmt in self.fmt_list: # ['.vtk', '.vtu']
-                file_name = self.frd_file_name[:-4] + num + fmt
+                file_name = "datp/"+self.frd_file_name[:-4] + num + fmt
                 logging.info('Writing %s', os.path.basename(file_name))
                 t = threading.Thread(target=write_converted_file,
                     args=(file_name, self.frd.ugrid))
@@ -968,7 +969,7 @@ class Converter:
             for _, inc, num in self.step_inc_num():
                 file_name = os.path.basename(self.frd_file_name[:-4]) + num
                 file_name = os.path.basename(file_name)
-                f.write(f'\t\t<DataSet file="{file_name}.vtu" timestep="{inc}"/>\n')
+                f.write(f'\t\t<DataSet file="datp/{file_name}.vtu" timestep="{inc}"/>\n')
 
             f.write('\t</Collection>\n')
             f.write('</VTKFile>')
